@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday My Princess 💖</title>
+  <link rel="stylesheet" href="style.css">
+<iframe src="music.html" style="display:none;"></iframe>
+</head>
+<body>
+
+  <!-- Floating hearts container (behind popup) -->
+  <div class="floating-hearts" aria-hidden="true"></div>
+
+  <!-- Popup overlay -->
+  <div class="popup-overlay" id="popup">
+    <div class="popup">
+      <h2>🎉 Happy Birthday My Little Princess ❤️🎉</h2>
+    </div>
+  </div>
+
+  <!-- Background music (replace src with a direct mp3 link if you have one) -->
+  <audio id="birthdaySong" preload="auto">
+    <source src="https://files.catbox.moe/ny6tkj.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // --- Floating hearts generator (robust & safe) ---
+    (function () {
+      const emojis = ["💝","💖","💗","💞","💓","💕"];
+      const container = document.querySelector(".floating-hearts");
+
+      if (!container) return;
+
+      // Create one heart element with randomized properties
+      function spawnHeart() {
+        const el = document.createElement("div");
+        el.className = "float-heart";
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+        // random horizontal start between 0% and 100%
+        const startX = Math.random() * 100;
+        el.style.left = startX + "vw";
+
+        // random size
+        const size = Math.floor(Math.random() * 28) + 16; // 16px - 44px
+        el.style.fontSize = size + "px";
+
+        // random delay and duration for natural effect
+        const duration = (Math.random() * 6) + 5; // 5s - 11s
+        const delay = Math.random() * 1.5; // 0 - 1.5s
+
+        el.style.animationDuration = duration + "s";
+        el.style.animationDelay = delay + "s";
+
+        container.appendChild(el);
+
+        // remove after animation finishes (duration + delay + small buffer)
+        setTimeout(() => {
+          el.remove();
+        }, (duration + delay + 0.2) * 1000);
+      }
+
+      // spawn hearts for popup lifetime (faster initially)
+      const spawnInterval = setInterval(spawnHeart, 300);
+
+      // stop spawning after 7.5s (popup will fade away)
+      setTimeout(() => clearInterval(spawnInterval), 7500);
+    })();
+
+
+    // --- Popup fade + music + redirect to surprise page ---
+    (function () {
+      const popup = document.getElementById("popup");
+      const audio = document.getElementById("birthdaySong");
+
+      // try to play music when user interacts (some browsers block autoplay)
+      function tryPlayAudio() {
+        if (!audio) return;
+        audio.play().catch(()=>{ /* autoplay blocked — will play on user gesture */ });
+        window.removeEventListener('click', tryPlayAudio);
+      }
+      window.addEventListener('click', tryPlayAudio, { once: true });
+
+      // Also attempt to play once page loads (may be blocked)
+      window.addEventListener('load', () => {
+        tryPlayAudio();
+      });
+
+      // Popup visible for 6.5s then fade out (matches CSS animation)
+      setTimeout(() => {
+        popup.classList.add('hide'); // triggers CSS fade
+        // after fade completes, remove popup and proceed to surprise.html
+        setTimeout(() => {
+          popup.remove();
+          // redirect to surprise.html if file exists (safe check)
+          // note: if you prefer to stay on same page and show content, change this line
+          window.location.href = 'surprise.html';
+        }, 1800); // match this to the CSS fade duration (1.5s)
+      }, 6500);
+    })();
+  </script>
+</body>
+</html>
