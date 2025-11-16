@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Background Music</title>
+
+  <style>
+    body {
+      background: rgba(0,0,0,0.85);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      flex-direction: column;
+    }
+
+    .start-btn {
+      padding: 15px 35px;
+      background: #ff4b8a;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 0 15px #ff4b8a;
+    }
+
+    p {
+      opacity: 0.7;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Hidden audio -->
+  <audio id="bg-music" loop>
+    <source src="untilfoundyou.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Start Button -->
+  <button class="start-btn" id="startBtn">💖 Tap to start music 💖</button>
+  <p>Music will continue across all pages</p>
+
+  <script>
+    const audio = document.getElementById("bg-music");
+    const btn = document.getElementById("startBtn");
+
+    btn.addEventListener("click", () => {
+      audio.play().then(() => {
+        btn.style.display = "none";  // hide button after start
+      });
+    });
+
+    // Expose globally
+    window.bgMusic = audio;
+  </script>
+
+</body>
+</html>

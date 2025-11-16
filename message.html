@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Message For You 💌</title>
+  <link rel="stylesheet" href="message.css" />
+<iframe src="music.html" style="display:none;"></iframe>
+</head>
+<body>
+
+  <div class="floating-hearts"></div>
+
+  <div class="message-box">
+    <h2>My Dearest Love 💖</h2>
+    <p id="message-text"></p>
+    <div class="signature">– From your love 💞</div>
+  </div>
+
+  <script>
+    // Floating hearts
+    const emojis = ["💞", "💖", "💘", "💝", "💓"];
+    const container = document.querySelector(".floating-hearts");
+
+    function createHeart() {
+      const heart = document.createElement("span");
+      heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      heart.classList.add("heart");
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 25 + 15 + "px";
+      heart.style.animationDuration = Math.random() * 5 + 5 + "s";
+      container.appendChild(heart);
+      setTimeout(() => heart.remove(), 10000);
+    }
+    setInterval(createHeart, 350);
+
+    // Typewriter message
+    const text = `Every beat of my heart whispers your name, 
+every star reminds me of your glow. 🌙✨
+Even though distance keeps us apart, 
+my love travels faster than light, 
+just to reach you on this special day. 💫🎂
+You are my sunshine, my peace, and my forever. ❤️`;
+
+    let i = 0;
+    const speed = 50;
+    function typeWriter() {
+      if (i < text.length) {
+        document.getElementById("message-text").innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, speed);
+      }
+    }
+    window.onload = typeWriter;
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+/* letstalk.css — Elegant dark theme with glowing hearts */
+
+/* reset */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:Inter, "Poppins", system-ui, sans-serif;background:#000;color:#fff}
+
+.hearts-bg{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(255,80,140,0.02), transparent 6%),
+    radial-gradient(circle at 90% 80%, rgba(255,80,140,0.02), transparent 8%);
+  overflow:hidden;
+}
+
+/* subtle floating hearts inside bg (added by JS in letstalk.js) */
+.bg-heart{position:absolute;bottom:-20vh;font-size:22px;opacity:.85;filter:drop-shadow(0 0 8px rgba(255,80,140,.8));}
+
+/* chat container */
+.chat-wrap{
+  position:relative;z-index:2;
+  width:100%;max-width:960px;margin:28px auto;min-height:70vh;
+  display:flex;flex-direction:column;border-radius:14px;
+  background:linear-gradient(180deg, rgba(12,12,12,0.9), rgba(8,8,8,0.95));
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  border:1px solid rgba(255,255,255,0.03);
+  overflow:hidden;
+}
+
+/* header */
+.chat-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.03)}
+.title{font-weight:700;color:#ff8fb1;text-shadow:0 0 12px rgba(255,80,140,0.18)}
+.identity label{margin-left:10px;cursor:pointer;font-size:0.92rem;color:#ddd}
+.identity input{margin-right:6px;transform:translateY(1px)}
+
+/* messages area */
+.messages{
+  padding:18px;flex:1;overflow:auto;display:flex;flex-direction:column;gap:12px;
+  scroll-behavior:smooth;
+  background-image: linear-gradient(180deg, rgba(255,255,255,0.01), transparent 30%);
+}
+
+/* single message bubble */
+.msg{
+  max-width:72%;
+  padding:12px 14px;border-radius:14px;position:relative;
+  line-height:1.3;font-size:0.98rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+}
+
+/* you vs her styles */
+.msg.you{
+  margin-left:auto;background:linear-gradient(135deg,#ff5f98,#ff3f7f);
+  color:white;text-shadow:0 1px 2px rgba(0,0,0,0.15);
+  border-bottom-right-radius:4px;
+}
+.msg.her{
+  margin-right:auto;background:linear-gradient(135deg,#222,#2a2a36);
+  color:#f2e9f3;border:1px solid rgba(255,80,140,0.06);
+  border-bottom-left-radius:4px;
+}
+
+/* small meta under bubble */
+.meta{display:block;font-size:0.78rem;opacity:0.75;margin-top:6px}
+
+/* composer */
+.composer{display:flex;gap:10px;padding:14px;border-top:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg,rgba(0,0,0,0.4),rgba(0,0,0,0.6))}
+#textIn{flex:1;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);color:#fff;outline:none}
+#textIn::placeholder{color:#aaa}
+#sendBtn{background:linear-gradient(90deg,#ff5f98,#ff3f7f);border:none;padding:10px 18px;border-radius:12px;color:#fff;font-weight:700;cursor:pointer}
+#sendBtn:active{transform:scale(.98)}
+
+/* footer */
+.chat-footer{padding:10px 16px;text-align:center;color:#bdbdbd;font-size:0.82rem;border-top:1px solid rgba(255,255,255,0.02)}
+
+/* responsive */
+@media (max-width:720px){
+  .chat-wrap{margin:10px;border-radius:10px}
+  .msg{max-width:86%}
+}

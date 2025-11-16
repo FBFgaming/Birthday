@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home 💫</title>
+  <link rel="stylesheet" href="home.css" />
+<iframe src="music.html" style="display:none;"></iframe>
+</head>
+<body>
+
+  <div class="floating-hearts" aria-hidden="true"></div>
+
+  <div class="card">
+    <h1>Hey My Love 💖</h1>
+    <p>
+      You are the reason stars shine brighter, <br>
+      the world feels softer, and my heart beats faster. <br>
+      Welcome to the space built just for you. 🌙✨
+    </p>
+    <a href="message.html" class="next-btn">Next ➤</a>
+  </div>
+
+  <audio id="birthdaySong" autoplay loop>
+    <source src="https://files.catbox.moe/ny6tkj.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // Floating hearts
+    const emojis = ["💖", "💞", "💘", "💓", "💗"];
+    const container = document.querySelector(".floating-hearts");
+
+    function createHeart() {
+      const heart = document.createElement("span");
+      heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      heart.classList.add("heart");
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 25 + 15 + "px";
+      heart.style.animationDuration = Math.random() * 5 + 5 + "s";
+      container.appendChild(heart);
+      setTimeout(() => heart.remove(), 10000);
+    }
+
+    setInterval(createHeart, 350);
+  </script>
+</body>
+</html>

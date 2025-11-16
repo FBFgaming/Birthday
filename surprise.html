@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Surprise 🎁 — For Sykko</title>
+
+  <!-- If you're using a global style.css put link to it; otherwise copy the CSS below into style.css -->
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* --- Surprise specific styles (can be merged into your style.css) --- */
+
+    :root{
+      --accent1: #ff4fa3;
+      --accent2: #ff88c9;
+      --glass: rgba(255,255,255,0.04);
+      --bg: rgba(0,0,0,0.75);
+      --text-glow: rgba(255,90,150,0.9);
+    }
+
+    html,body{height:100%;margin:0;font-family: "Poppins", sans-serif;background:#000;color:#fff;-webkit-font-smoothing:antialiased;}
+    .surprise-wrap{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background: radial-gradient(circle at 10% 10%, #070707 0%, #000 60%);}
+
+/* blurred black shade overlay */
+    .bg-blur{
+      position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter: blur(6px);z-index:0;
+    }
+
+    /* falling emoji container sits above blur but below content */
+    .emoji-rain{
+      position:absolute;inset:0;pointer-events:none;z-index:5;overflow:hidden;
+    }
+
+    /* spawn hearts here (JS adds .emoji elements) */
+    .emoji{
+      position:absolute;top:-10vh;font-size:28px;opacity:0;transform:translateY(0);
+      animation: emojiFall linear forwards;
+      text-shadow: 0 0 10px rgba(255,120,160,0.85);
+    }
+    @keyframes emojiFall{
+      0%{opacity:1; transform: translateY(-5vh) rotate(0deg) scale(0.9);}
+      30%{transform: translateY(20vh) rotate(20deg) scale(1);}
+      70%{transform: translateY(60vh) rotate(-10deg) scale(1.05); opacity:0.9;}
+      100%{transform: translateY(120vh) rotate(45deg) scale(1.1); opacity:0;}
+    }
+
+    /* center stage */
+    .stage{
+      position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;gap:18px;padding:20px;width:100%;max-width:980px;
+    }
+
+    /* gift box */
+    .gift{
+      position:relative;width:180px;height:140px;border-radius:14px;background:linear-gradient(180deg,#1b0015,#350018);
+      box-shadow: 0 10px 40px rgba(255,20,120,0.12), inset 0 -6px 18px rgba(0,0,0,0.6);
+      display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;
+      transform-origin:center;transition:transform .25s ease;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .gift:active{transform:scale(.98);}
+
+    /* ribbon */
+    .ribbon-vertical{position:absolute;top:0;left:50%;transform:translateX(-50%);width:34px;height:100%;background:linear-gradient(180deg,var(--accent1),var(--accent2));border-radius:6px;}
+    .ribbon-horizontal{position:absolute;left:0;top:50%;transform:translateY(-50%);height:28px;width:100%;background:linear-gradient(90deg,var(--accent1),var(--accent2));border-radius:8px;}
+
+    /* lid */
+    .lid{
+      position:absolute;top:-36px;left:50%;transform:translateX(-50%);width:220px;height:44px;background:linear-gradient(90deg,var(--accent1),var(--accent2));border-radius:10px;transform-origin: center bottom;box-shadow:0 8px 30px rgba(255,70,140,0.18);
+      transition:transform 700ms cubic-bezier(.2,.9,.3,1), top 700ms;
+    }
+
+    /* open state */
+    .gift.open .lid{ transform: rotateX(140deg); top:-100px; }
+    .gift.open{ box-shadow: 0 18px 70px rgba(255,60,130,0.18); }
+
+    /* glow text that appears */
+    .reveal-text{
+      font-weight:700;font-size:1.25rem;color:#fff;text-align:center;opacity:0;transform:translateY(6px);
+      text-shadow:0 0 18px var(--text-glow), 0 0 30px rgba(255,120,160,0.5);
+      transition:opacity .6s ease .6s, transform .6s ease .6s;
+      letter-spacing:0.6px;
+    }
+    .gift.open + .reveal-text{opacity:1;transform:translateY(0);}
+
+    /* images container — car and key */
+    .reveal-images{
+      width:100%;display:flex;gap:18px;align-items:center;justify-content:center;opacity:0;transform:translateY(18px);
+      transition:opacity .7s ease .9s, transform .7s ease .9s;
+    }
+    .gift.open ~ .reveal-images{ opacity:1; transform:translateY(0);}
+
+    .car{
+      max-width:320px;width:60%;height:auto;border-radius:12px;box-shadow: 0 16px 50px rgba(0,0,0,0.7);
+      transform: translateY(20px);transition:transform .9s cubic-bezier(.2,.9,.3,1);
+    }
+    .gift.open ~ .reveal-images .car{ transform: translateY(0); }
+
+    .key{
+      width:90px;height:auto;border-radius:8px;align-self:flex-end;box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      transform: translateY(30px);transition:transform 1s cubic-bezier(.2,.9,.3,1);
+    }
+    .gift.open ~ .reveal-images .key{ transform: translateY(0); }
+
+    /* layout for desktop vs mobile */
+    @media (min-width:760px){
+      .reveal-images{ flex-direction:row; }
+      .reveal-images .car{ width:420px; }
+    }
+    @media (max-width:759px){
+      .reveal-images{ flex-direction:column-reverse; gap:12px; align-items:center; }
+      .car{ width:85%; }
+      .key{ width:72px; }
+      .gift{ width:150px;height:120px; }
+      .lid{ width:180px;height:36px; top:-30px; }
+      .reveal-text{ font-size:1.05rem }
+    }
+
+    /* Next button */
+    .next-btn{
+      margin-top:10px;padding:12px 28px;border-radius:28px;background:linear-gradient(90deg,var(--accent1),var(--accent2));
+      color:#fff;border:none;font-weight:700;font-size:1rem;cursor:pointer;box-shadow:0 8px 30px rgba(255,80,150,0.18);
+      opacity:0;transform:translateY(8px);transition:opacity .6s ease 1.2s, transform .6s ease 1.2s;
+      text-decoration:none;display:inline-block;
+    }
+    .gift.open ~ .next-btn{opacity:1;transform:translateY(0);}
+
+    /* accessibility note */
+    .sr-only{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
+  </style>
+</head>
+<body>
+  <div class="surprise-wrap">
+    <div class="bg-blur" aria-hidden="true"></div>
+
+    <!-- falling emojis -->
+    <div class="emoji-rain" id="emojiRain" aria-hidden="true"></div>
+
+    <main class="stage" role="main" aria-labelledby="surpriseTitle">
+      <div class="sr-only" id="surpriseTitle">Surprise for Sykko</div>
+
+      <!-- gift -->
+      <div class="gift" id="gift" role="button" tabindex="0" aria-pressed="false" aria-label="Open gift box">
+        <div class="lid" id="lid"></div>
+        <div class="ribbon-vertical" aria-hidden="true"></div>
+        <div class="ribbon-horizontal" aria-hidden="true"></div>
+      </div>
+
+      <!-- text that appears when opened -->
+      <div class="reveal-text" id="revealText">HERE YOU GO MY LITTLE PRINCESS</div>
+
+      <!-- images that rise up after open -->
+      <div class="reveal-images" aria-hidden="false">
+        <!-- car image -->
+        <img src="bmw.png" alt="BMW car" class="car" id="carImage" onerror="this.style.display='none'">
+        <!-- key image -->
+        <img src="bmw-key.png" alt="BMW key" class="key" id="keyImage" onerror="this.style.display='none'">
+      </div>
+
+      <!-- next button -->
+      <a href="message.html" class="next-btn" id="nextBtn" aria-hidden="true">Next ➤</a>
+    </main>
+  </div>
+
+  <script>
+    // Friendly helper to detect touch/click and support keyboard activation
+    (function(){
+      const gift = document.getElementById('gift');
+      const lid = document.getElementById('lid');
+      const revealText = document.getElementById('revealText');
+      const nextBtn = document.getElementById('nextBtn');
+      const emojiRain = document.getElementById('emojiRain');
+      const car = document.getElementById('carImage');
+      const key = document.getElementById('keyImage');
+
+      // prevent repeated opens
+      let opened = false;
+
+      // emojis to rain from top
+      const EMOJIS = ['💝','💖','💕','💞','💓','💗','💘','💟'];
+
+      // spawn many falling emojis for a short burst
+      function spawnEmojiBurst(count=24){
+        for(let i=0;i<count;i++){
+          const el = document.createElement('div');
+          el.className = 'emoji';
+          el.textContent = EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
+          // start at random left position
+          el.style.left = (Math.random()*92 + 2) + 'vw';
+          // font-size
+          const size = Math.floor(Math.random()*32)+18;
+          el.style.fontSize = size + 'px';
+          // stagger duration slightly
+          const dur = (Math.random()*2.5) + 4.5;
+          el.style.animationDuration = dur + 's';
+          el.style.animationDelay = (Math.random()*0.4)+'s';
+          emojiRain.appendChild(el);
+          // remove after animation
+          setTimeout(()=> el.remove(), (dur+0.5)*1000);
+        }
+      }
+
+      // open animation
+      function openGift(){
+        if(opened) return;
+        opened = true;
+        gift.classList.add('open');
+        gift.setAttribute('aria-pressed','true');
+
+        // emoji rain burst
+        spawnEmojiBurst(40);
+
+        // small delay before showing Next so it feels natural
+        setTimeout(()=>{
+          // make Next link focusable & visible (CSS handles fade)
+          nextBtn.setAttribute('aria-hidden','false');
+          nextBtn.focus();
+        }, 1800);
+
+        // subtle bounce/scale highlight
+        gift.animate([
+          { transform: 'scale(1)' },
+          { transform: 'scale(1.03)' },
+          { transform: 'scale(1)' }
+        ], { duration: 800, easing: 'ease-out' });
+
+        // if car/key images exist, animate small pop (CSS handles movement; we can add wave)
+        if(car && car.complete){
+          car.style.opacity = 1;
+        }
+        if(key && key.complete){
+          key.style.opacity = 1;
+        }
+      }
+
+      // click / touch / Enter/Space to open
+      gift.addEventListener('click', openGift);
+      gift.addEventListener('touchstart', (e)=>{ e.preventDefault(); openGift(); }, {passive:false});
+      gift.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openGift(); } });
+
+      // progressively spawn faint background emojis while page first loads for ambience
+      (function ambientEmojis(){
+        let count=0;
+        const ambient = setInterval(()=>{
+          spawnEmojiBurst(2);
+          count++;
+          if(count>10) clearInterval(ambient);
+        }, 700);
+      })();
+
+      // attempt autoplay music on user gesture (if you add audio)
+      // If you want background music, add an <audio> tag with id "bgAudio" and include a source .mp3
+      const bgAudio = document.getElementById('bgAudio');
+      if(bgAudio){
+        window.addEventListener('click', ()=> bgAudio.play(), {once:true});
+      }
+    })();
+  </script>
+</body>
+</html>

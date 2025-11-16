@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Let's Talk — Private Chat</title>
+  <link rel="stylesheet" href="letstalk.css">
+  <!-- Firebase v9 modular (CDN) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<iframe src="music.html" style="display:none;"></iframe>
+</head>
+<body>
+  <div class="hearts-bg" aria-hidden="true"></div>
+
+  <div class="chat-wrap">
+    <header class="chat-header">
+      <div class="title">Let's Talk — Private</div>
+      <div class="identity">
+        <label>
+          <input type="radio" name="who" value="hcrrr ❤️" id="id_me">
+          <span>hcrrr ❤️ (you)</span>
+        </label>
+        <label>
+          <input type="radio" name="who" value="sykkoo ❤️" id="id_her">
+          <span>sykkoo ❤️</span>
+        </label>
+      </div>
+    </header>
+
+    <main id="messages" class="messages" aria-live="polite"></main>
+
+    <form id="sendForm" class="composer" autocomplete="off">
+      <input id="textIn" type="text" placeholder="Write a private message..." maxlength="1000" />
+      <button type="submit" id="sendBtn">Send</button>
+    </form>
+
+    <footer class="chat-footer">
+      <small>Messages are stored in Firebase Realtime DB (private to your project).</small>
+    </footer>
+  </div>
+
+  <script src="letstalk.js"></script>
+</body>
+</html>

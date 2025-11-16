@@ -1,0 +1,87 @@
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0d0d0d, #1a1a1a, #000);
+  font-family: "Poppins", sans-serif;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Floating Hearts */
+.floating-hearts {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.heart {
+  position: absolute;
+  bottom: -50px;
+  animation: float 8s ease-in-out infinite;
+  opacity: 0.7;
+  text-shadow: 0 0 15px rgba(255, 0, 100, 0.7);
+}
+
+@keyframes float {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+}
+
+/* Glassy Card */
+.card {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  padding: 40px 50px;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(255, 50, 150, 0.2);
+  animation: fadeIn 1.5s ease-in-out;
+  width: 85%;
+  max-width: 600px;
+}
+
+.card h1 {
+  font-size: 2.2rem;
+  color: #ff9bce;
+  text-shadow: 0 0 15px rgba(255, 80, 150, 0.8);
+}
+
+.card p {
+  margin-top: 1rem;
+  line-height: 1.7;
+  font-size: 1.1rem;
+  color: #e0e0e0;
+}
+
+/* Button */
+.next-btn {
+  display: inline-block;
+  margin-top: 2rem;
+  padding: 10px 30px;
+  background: rgba(255, 100, 180, 0.3);
+  color: #fff;
+  border-radius: 25px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.next-btn:hover {
+  background: rgba(255, 100, 180, 0.6);
+  transform: scale(1.05);
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

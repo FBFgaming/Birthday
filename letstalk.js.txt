@@ -1,0 +1,126 @@
+/* letstalk.js
+ - expects firebase-app-compat and firebase-database-compat loaded (we included compat CDN in HTML)
+ - Replace firebaseConfig below with your project's config.
+*/
+
+// ---------- CONFIG: paste your Firebase config here ----------
+const firebaseConfig = {
+  apiKey: "PASTE_YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "xxxx",
+  appId: "1:xxxx:web:xxxxxxxx"
+};
+// ----------------------------------------------------------------
+
+if (!firebaseConfig || !firebaseConfig.apiKey) {
+  console.error("Please add your Firebase config to letstalk.js before using the chat.");
+  alert("Missing Firebase configuration. See letstalk.js and paste your Firebase config.");
+}
+
+// initialize firebase (compat)
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// DOM
+const messagesEl = document.getElementById('messages');
+const form = document.getElementById('sendForm');
+const textIn = document.getElementById('textIn');
+const sendBtn = document.getElementById('sendBtn');
+const idMe = document.getElementById('id_me');
+const idHer = document.getElementById('id_her');
+
+// set default identity from localStorage or default to hcrrr
+const LOCAL_KEY = 'letstalk_identity_v1';
+let identity = localStorage.getItem(LOCAL_KEY) || 'hcrrr ❤️';
+if (identity === 'hcrrr ❤️') idMe.checked = true; else idHer.checked = true;
+
+// identity change handling
+[idMe, idHer].forEach(el => {
+  el.addEventListener('change', () => {
+    if (el.checked) {
+      identity = el.value;
+      localStorage.setItem(LOCAL_KEY, identity);
+    }
+  });
+});
+
+// sanitize text to prevent HTML injection
+function escapeHtml(str) {
+  return str.replace(/[&<>"'`=\/]/g, function(s){ return ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','/':'&#x2F;','`':'&#x60;','=':'&#x3D;'
+  })[s]; });
+}
+
+// push message to realtime db
+function sendMessage(name, text) {
+  if (!text || !text.trim()) return;
+  const messagesRef = db.ref('chats/default'); // single room "default"
+  const msg = {
+    name: name,
+    text: text.trim(),
+    ts: firebase.database.ServerValue.TIMESTAMP
+  };
+  messagesRef.push(msg).catch(err => console.error("DB push error:", err));
+}
+
+// render a message bubble
+function renderMessage(item) {
+  const m = item.val ? item.val() : item; // support both snapshot and plain object
+  const who = m.name || 'unknown';
+  const text = escapeHtml(m.text || '');
+  const date = m.ts ? new Date(m.ts) : new Date();
+  const time = date.toLocaleString();
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg ' + (who === identity ? 'you' : 'her');
+  bubble.innerHTML = `<div class="body">${text}</div><div class="meta">${who} • ${time}</div>`;
+  messagesEl.appendChild(bubble);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+// listen for new messages
+const messagesRef = db.ref('chats/default').limitToLast(200);
+messagesRef.on('child_added', snap => {
+  renderMessage(snap);
+});
+
+// send form handling
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const txt = textIn.value;
+  if (!txt || !txt.trim()) return;
+  sendMessage(identity, txt);
+  textIn.value = '';
+  textIn.focus();
+});
+
+// tiny ambient floating hearts background (client-only)
+(function spawnBgHearts(){
+  const container = document.querySelector('.hearts-bg');
+  if (!container) return;
+  const emojis = ['💝','💖','💗','💞','💓','💕'];
+  function spawn() {
+    const el = document.createElement('span');
+    el.className = 'bg-heart';
+    el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    el.style.left = (Math.random()*100) + 'vw';
+    el.style.bottom = (-5 + Math.random()*15) + 'vh';
+    el.style.fontSize = (12 + Math.random()*28) + 'px';
+    el.style.opacity = (0.3 + Math.random()*0.7);
+    container.appendChild(el);
+    // animate using CSS (we already defined floatUp-like animation in style)
+    el.animate([
+      { transform: 'translateY(0) rotate(0deg)', opacity: el.style.opacity },
+      { transform: 'translateY(-120vh) rotate(360deg)', opacity: 0 }
+    ], {
+      duration: 8000 + Math.random()*8000,
+      easing: 'ease-in',
+      iterations: 1
+    });
+    setTimeout(()=> el.remove(), 17000);
+  }
+  setInterval(spawn, 700);
+})();

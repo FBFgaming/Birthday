@@ -1,0 +1,107 @@
+/* General reset */
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html,body { height:100%; background: #000; font-family: "Poppins", sans-serif; }
+
+/* Floating hearts container (behind popup) */
+.floating-hearts {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;       /* behind the popup (popup uses higher z-index) */
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(255,255,255,0.02), transparent 8%),
+    radial-gradient(circle at 90% 80%, rgba(255,255,255,0.02), transparent 8%);
+}
+
+/* Each spawned heart */
+.float-heart {
+  position: absolute;
+  bottom: -10vh;             /* start off-screen below */
+  will-change: transform, opacity;
+  color: #ff6b8a;           /* pinkish glow color */
+  text-shadow: 0 0 8px rgba(255,107,138,0.9);
+  opacity: 0.95;
+  /* animation name + duration set inline by JS for variety */
+  animation-name: floatUpAndFade;
+  animation-timing-function: ease-in;
+  animation-iteration-count: 1;
+  transform-origin: center;
+}
+
+/* animation that moves heart up, rotates slightly and fades */
+@keyframes floatUpAndFade {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(0.95);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  30% {
+    transform: translateY(-30vh) rotate(15deg) scale(1.05);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(-70vh) rotate(-10deg) scale(1.15);
+    opacity: 0.9;
+    filter: blur(0.5px);
+  }
+  100% {
+    transform: translateY(-115vh) rotate(40deg) scale(1.2);
+    opacity: 0;
+    filter: blur(1.5px);
+  }
+}
+
+/* Popup overlay (dark, glass, centered) */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.85));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  transition: opacity 1.5s ease, visibility 1.5s ease;
+}
+
+/* hide class triggers fade out */
+.popup-overlay.hide {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Popup card */
+.popup {
+  background: rgba(20,20,20,0.65);
+  padding: 36px 56px;
+  border-radius: 22px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 30px rgba(255,100,150,0.06) inset;
+  backdrop-filter: blur(8px) saturate(120%);
+  border: 1px solid rgba(255,255,255,0.04);
+  transform-origin: center;
+  animation: popupIn 0.9s cubic-bezier(.2,.9,.3,1);
+}
+
+/* Popup entrance */
+@keyframes popupIn {
+  0% { transform: scale(0.85); opacity: 0; }
+  60% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Glowing headline */
+.popup h2 {
+  font-size: 1.9rem;
+  line-height: 1.2;
+  color: #fff;
+  text-shadow: 0 0 12px rgba(255, 80, 140, 0.9), 0 0 30px rgba(255, 80, 140, 0.5);
+}
+
+/* small screens adjust sizing */
+@media (max-width: 480px) {
+  .popup { padding: 28px 22px; border-radius: 18px; }
+  .popup h2 { font-size: 1.4rem; }
+}
